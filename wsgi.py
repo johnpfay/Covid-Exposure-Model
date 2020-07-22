@@ -123,7 +123,7 @@ md_results = summarize_output(df)
 
 app = dash.Dash(__name__)#, external_stylesheets=external_stylesheets)
 app.title = "COVID exposure modeler"
-server = app.server 
+application = app.server 
 
 #Construct the web site
 app.layout = html.Div([
