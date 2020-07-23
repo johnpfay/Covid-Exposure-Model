@@ -1,0 +1,13 @@
+body {
+    font-family: calibri;
+	background-color: #ffffff;
+}
+h1, h2, h3, h4, h5, h6 {
+    
+}
+
+input#vent_max,
+input#vent_min,
+input#infect_min,
+input#infect_max
+ {background-color:yellow;}
