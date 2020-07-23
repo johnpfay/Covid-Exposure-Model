@@ -16,6 +16,9 @@ import numpy as np
 def get_random(var,n=10000):
     return np.random.uniform(*var+[n])
 
+def get_normal(var,n=10000):
+    return np.random.normal(*var+[n])
+
 def update_df(surface_area = 900,
               height = 10,
               num_faculty = 1,
@@ -23,15 +26,15 @@ def update_df(surface_area = 900,
               duration = 75,
               num_class_periods = 26,
               num_classes_taken = 4,
-              breathing_rate_faculty = [1,1.2],
-              breathing_rate_student = [0.7,0.9],
-              ventilation_w_outside_air = [2,4],
-              decay_rate_of_virus = [0,0.63],
+              breathing_rate_faculty = [0.027,0.029],
+              breathing_rate_student = [0.012,0.012],
+              ventilation_w_outside_air = [1,4],
+              decay_rate_of_virus = [0,1.0],
               deposition_to_surface = [0.3,1.5],
               additional_control_measures = [0,0],
-              quanta_emission_rate_faculty = [100,300],
-              quanta_emission_rate_student = [10,30],
-              exhalation_mask_efficiency = [0.5,0.7],
+              quanta_emission_rate_faculty = [1.5,0.71],
+              quanta_emission_rate_student = [0.69,0.71],
+              exhalation_mask_efficiency = [0.4,0.6],
               inhalation_mask_efficiency = [0.3,0.5],
               background_infection_rate = [0.0019,0.0038]):
     #Create dataframe of 10,000 runs
@@ -45,8 +48,10 @@ def update_df(surface_area = 900,
     df['L*DUR'] = df['L'] * duration / 60
     df['VOL']   = surface_area * height*0.305**3
     df['EFFOUT'] = get_random(exhalation_mask_efficiency,num_runs)
-    df['EMMF']  = get_random(quanta_emission_rate_faculty,num_runs)
-    df['EMMS']  = get_random(quanta_emission_rate_student,num_runs)
+    df['EMMFx']  = get_normal(quanta_emission_rate_faculty,num_runs)
+    df['EMMSx']  = get_normal(quanta_emission_rate_student,num_runs)
+    df['EMMF'] = 10**df['EMMFx']
+    df['EMMS'] = 10**df['EMMSx']
     df['INFRATE'] = get_random(background_infection_rate,num_runs)
     df['CONCF'] = (df['EMMF']*
                    (1-df['EFFOUT'])/
@@ -59,8 +64,10 @@ def update_df(surface_area = 900,
                    (1-1/df['L*DUR']*(1-np.exp(-df['L*DUR'])))*
                    df['INFRATE'])*num_students
     df['EFFIN'] = get_random(inhalation_mask_efficiency,num_runs)
-    df['BRF']   = get_random(breathing_rate_faculty,num_runs)
-    df['BRS']   = get_random(breathing_rate_student,num_runs)
+    df['BRFx']   = get_random(breathing_rate_faculty,num_runs)
+    df['BRSx']   = get_random(breathing_rate_student,num_runs)
+    df['BRF']   = 60 * df['BRFx']
+    df['BRS']   = 60 * df['BRSx']
     df['INS_F'] = df['CONCF'] * df['BRS'] * duration/60 * (1-df['EFFIN'])
     df['INF_S'] = df['CONCS'] * df['BRF'] * duration/60 * (1-df['EFFIN'])
     df['INS_S'] = df['CONCS'] * df['BRS'] * duration/60 * (1-df['EFFIN']) 
@@ -84,11 +91,11 @@ def update_figure(df,faculty=True):
     #Get the max x value
     x_max = df['PS_Ssemester'].max()
     #Update the figure
-    fig = px.histogram(df,x=fld,nbins=40,
-                       title=f'Distribution of {txt} Infection Probabilities over<br>the course of the Semester for 10,000 Monte Carlo Simulations')
+    fig = px.histogram(df,x=fld,nbins=50,
+                       title=f'Calculated Distribution of {txt} Infection Probabilities for Semester<br>from 10,000 Monte Carlo Simulations')
     fig.update_xaxes(title_text = 'Probability of infection (%)',
                      range=[0,x_max])
-    fig.update_layout(xaxis_tickformat = "%",
+    fig.update_layout(xaxis_tickformat = ".1%",
                       font_size=10)
     #fig.update_layout(transition_duration=500)
     return(fig)
@@ -101,9 +108,9 @@ def summarize_output(df,faculty=True):
     the_quants = [df[fld].quantile(x) for x in (0.05,0.25,0.5,0.75,0.95)]
     #Create Markdown
     md_text=f'''  
-**Average Infection Probability for {txt} for semester**
+**Statistics of Calculated Infection Probabilities for {txt} for Semester**
 
-| Average (10k runs) | {the_mean:0.2%} |
+| Average: | {the_mean:0.2%} |
 | --: | --- |
 | 5th percentile: | {the_quants[0]:0.2%} |
 | 25th percentile: | {the_quants[1]:0.2%} |
@@ -124,6 +131,9 @@ md_results = summarize_output(df)
 app = dash.Dash(__name__)#, external_stylesheets=external_stylesheets)
 app.title = "COVID exposure modeler"
 application = app.server 
+
+#Link to Juan's Excel Spreadsheet - base for adding links
+gsheet_url = 'https://docs.google.com/spreadsheets/d/16K1OQkLD4BjgBdO8ePj6ytf-RpPMlJ6aXFg3PrIQBbQ/edit#gid=519189277&range='
 
 #Construct the web site
 app.layout = html.Div([
@@ -149,89 +159,115 @@ Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, 
            'background-color': 'lightblue'}),
     html.Table([
         html.Tr([
-            html.Th("Known Variables"), 
-            html.Th("Value"),
+            html.Th("Known Variables",style={'text-align':'left'}), 
+            html.Th("Value",style={'text-align':'left'}),
             html.Th("______",style={'color':'white'}),
-            html.Th("Uncertain Variables"), 
-            html.Th("Min"), 
-            html.Th("Max")]),
+            html.Th("Uncertain Variables",style={'text-align':'left'}), 
+            html.Th("Minimum Value",style={'text-align':'left'}), 
+            html.Th("Maximum Value",style={'text-align':'left'})]),
         html.Tr([
             html.Td("Area of Room (sq.ft.)"), 
             html.Td(dcc.Input(id='surface',value=900,type='number')),
             html.Td(""),
-            html.Td("Breathing rate - Faculty (m³/hour)"),
-            html.Td(dcc.Input(id='breath_fmin',value=1.0,type='number')),
-            html.Td(dcc.Input(id='breath_fmax',value=1.2,type='number'))]),
+            html.Td([html.A("Ventilation rate w/outside air (per hour)",
+                            href=gsheet_url + 'A195',
+                            target='_blank')]),            
+            html.Td(dcc.Input(id='vent_min',value=1,type='number')),
+            html.Td(dcc.Input(id='vent_max',value=4,type='number'))]),
         html.Tr([
-            html.Td("Height of Room(ft.)"), 
+            html.Td("Height of Room (ft.)"), 
             html.Td(dcc.Input(id='height',value=10,type='number')),
             html.Td(""),
-            html.Td("Breathing rate - Student (m³/hour)"),
-            html.Td(dcc.Input(id='breath_smin',value=0.7,type='number')),
-            html.Td(dcc.Input(id='breath_smax',value=0.9,type='number'))]),
+            html.Td([html.A("Decay rate of the virus (per hour)",
+                            href=gsheet_url + 'A256',
+                            target='_blank')]),    
+            html.Td(dcc.Input(id='decay_min',value=0,type='number')),
+            html.Td(dcc.Input(id='decay_max',value=1.0,type='number')),]),
         html.Tr([
             html.Td("# of students"), 
             html.Td(dcc.Input(id='num_students',value=10,type='number')),
             html.Td(""),
-            html.Td("Ventilation w/outside air (1/hour)"),
-            html.Td(dcc.Input(id='vent_min',value=2,type='number')),
-            html.Td(dcc.Input(id='vent_max',value=4,type='number'))]),
+            html.Td([html.A("Deposition rate to surfaces (per hour)",
+                            href=gsheet_url + 'A283',
+                            target='_blank')]),  
+            html.Td(dcc.Input(id='depos_min',value=0.3,type='number')),
+            html.Td(dcc.Input(id='depos_max',value=1.5,type='number')),]),
         html.Tr([
             html.Td("Class duration (min.)"), 
             html.Td(dcc.Input(id='class_duration',value=75,type='number')),
             html.Td(""),
-            html.Td("Decay rate of the virus (1/hour)"),
-            html.Td(dcc.Input(id='decay_min',value=0,type='number')),
-            html.Td(dcc.Input(id='decay_max',value=0.63,type='number')),]),
+            html.Td([html.A("Loss rate due to additional control measures (per hour)",
+                            href=gsheet_url + 'A289',
+                            target='_blank')]), 
+            html.Td(dcc.Input(id='additional_min',value=0,type='number')),
+            html.Td(dcc.Input(id='additional_max',value=0,type='number')),]),
         html.Tr([
             html.Td("# of class periods"), 
             html.Td(dcc.Input(id='class_periods',value=26,type='number')),
             html.Td(""),
-            html.Td("Deposition to surfaces (1/hour)"),
-            html.Td(dcc.Input(id='depos_min',value=0.3,type='number')),
-            html.Td(dcc.Input(id='depos_max',value=1.5,type='number')),]),
+            html.Td([html.A("Inhalation rate: Faculty (m³/minute)",
+                            href=gsheet_url + 'A102',
+                            target='_blank')]), 
+            html.Td(dcc.Input(id='breath_fmin',value=0.027,type='number')),
+            html.Td(dcc.Input(id='breath_fmax',value=0.029,type='number'))]),
         html.Tr([
             html.Td("# of classes taken per student"), 
             html.Td(dcc.Input(id='classes_taken',value=4,type='number')),
             html.Td(""),
-            html.Td("Additional control measures (1/hour)"),
-            html.Td(dcc.Input(id='additional_min',value=0,type='number')),
-            html.Td(dcc.Input(id='additional_max',value=0,type='number')),]),
+            html.Td([html.A("Inhalation rate: Student (m³/minute)",
+                            href=gsheet_url + 'A102',
+                            target='_blank')]), 
+            html.Td(dcc.Input(id='breath_smin',value=0.012,type='number')),
+            html.Td(dcc.Input(id='breath_smax',value=0.012,type='number'))]),
         html.Tr([
             html.Td("# of faculty in class"), 
             html.Td("1 (fixed)",style={'border-style':'solid',
                                        'border-color':'grey',
                                        'border-width':'thin'}),
             html.Td(""),
-            html.Td("Quanta emission rate - faculty (quanta/hour)"),
-            html.Td(dcc.Input(id='qfac_min',value=100,type='number')),
-            html.Td(dcc.Input(id='qfac_max',value=300,type='number')),]),
+            html.Td([html.A("Inhalation mask efficiency (%)",
+                            href=gsheet_url + 'A188',
+                            target='_blank')]),
+            html.Td(dcc.Input(id='inmask_min',value=30,type='number')),
+            html.Td(dcc.Input(id='inmask_max',value=50,type='number')),]),
         html.Tr([
             html.Td(), 
             html.Td(),
             html.Td(""),
-            html.Td("Quanta emission rate - student (quanta/hour)"),
-            html.Td(dcc.Input(id='qstu_min',value=10,type='number')),
-            html.Td(dcc.Input(id='qstu_max',value=30,type='number')),]),
+            html.Td([html.A('Exhalation mask efficiency (%)',
+                            href=gsheet_url + 'A174',
+                            target='_blank')]),
+            #html.Td("Exhalation mask efficiency (%)"),
+            html.Td(dcc.Input(id='exmask_min',value=40,type='number')),
+            html.Td(dcc.Input(id='exmask_max',value=60,type='number')),]),
         html.Tr([
             html.Td(), 
             html.Td(),
             html.Td(),
-            html.Td("Exhalation mask efficiency (%)"),
-            html.Td(dcc.Input(id='exmask_min',value=50,type='number')),
-            html.Td(dcc.Input(id='exmask_max',value=70,type='number')),]),
+            html.Td([html.A("Community infection rate (%)",
+                            href=gsheet_url + 'A301',
+                            target='_blank')]),
+            html.Td(dcc.Input(id='infect_min',value=0.19,type='number')),
+            html.Td(dcc.Input(id='infect_max',value=0.38,type='number')),]),
+        html.Tr([
+            html.Th(), 
+            html.Th(),
+            html.Th("______",style={'color':'white'}),
+            html.Th("FOR ADVANCED USERS ONLY",style={'text-align':'left'}), 
+            html.Th("Mean",style={'text-align':'left'}), 
+            html.Th("Standard Deviation",style={'text-align':'left'})]),
         html.Tr([
             html.Td(""), 
             html.Td(""),
             html.Td(""),
-            html.Td("Inhalation mask efficiency (%)"),
-            html.Td(dcc.Input(id='inmask_min',value=30,type='number')),
-            html.Td(dcc.Input(id='inmask_max',value=50,type='number')),]),
+            html.Td("log10[(Quanta emission rate: Faculty (quanta/hour)]"),
+            html.Td(dcc.Input(id='qfac_min',value=1.5,type='number')),
+            html.Td(dcc.Input(id='qfac_max',value=0.71,type='number')),]),
         html.Tr([
             html.Td(),html.Td(),html.Td(),
-            html.Td("Student/faculty background infection rate (%)"),
-            html.Td(dcc.Input(id='infect_min',value=0.19,type='number')),
-            html.Td(dcc.Input(id='infect_max',value=0.38,type='number')),]),
+            html.Td("log10[(Quanta emission rate: Student (quanta/hour)]"),
+            html.Td(dcc.Input(id='qstu_min',value=0.69,type='number')),
+            html.Td(dcc.Input(id='qstu_max',value=0.71,type='number')),]),
             ]),
               
     html.Button(id='submit-button-state',n_clicks=0,children='Recalculate',
