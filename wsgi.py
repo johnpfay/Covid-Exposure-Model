@@ -91,11 +91,11 @@ def update_figure(df,faculty=True):
     #Get the max x value
     x_max = df['PS_Ssemester'].max()
     #Update the figure
-    fig = px.histogram(df,x=fld,nbins=50,
+    fig = px.histogram(df,x=fld,nbins=40,
                        title=f'Calculated Distribution of {txt} Infection Probabilities for Semester<br>from 10,000 Monte Carlo Simulations')
     fig.update_xaxes(title_text = 'Probability of infection (%)',
                      range=[0,x_max])
-    fig.update_layout(xaxis_tickformat = ".1%",
+    fig.update_layout(xaxis_tickformat = "%",
                       font_size=10)
     #fig.update_layout(transition_duration=500)
     return(fig)
@@ -108,15 +108,15 @@ def summarize_output(df,faculty=True):
     the_quants = [df[fld].quantile(x) for x in (0.05,0.25,0.5,0.75,0.95)]
     #Create Markdown
     md_text=f'''  
-**Statistics of Calculated Infection Probabilities for {txt} for Semester**
+**Statistics of Calculated Infection Probability for {txt} for Semester**
 
-| Average: | {the_mean:0.2%} |
+| Average Calculated Infection Probability | {the_mean:0.2%} |
 | --: | --- |
-| 5th percentile: | {the_quants[0]:0.2%} |
-| 25th percentile: | {the_quants[1]:0.2%} |
-| 50th percentile: | {the_quants[2]:0.2%} |
-| 75th percentile: | {the_quants[3]:0.2%} |
-| 95th percentile: | {the_quants[4]:0.2%} |
+| 5% chance that infection probability will be less than | {the_quants[0]:0.2%} |
+| 25% chance that infection probability will be less than | {the_quants[1]:0.2%} |
+| 55% chance that infection probability will be less than | {the_quants[2]:0.2%} |
+| 75% chance that infection probability will be less than | {the_quants[3]:0.2%} |
+| 95% chance that infection probability will be less than | {the_quants[4]:0.2%} |
 '''
     return md_text
 
@@ -132,16 +132,13 @@ app = dash.Dash(__name__)#, external_stylesheets=external_stylesheets)
 app.title = "COVID exposure modeler"
 application = app.server 
 
-#Link to Juan's Excel Spreadsheet - base for adding links
-gsheet_url = 'https://docs.google.com/spreadsheets/d/16K1OQkLD4BjgBdO8ePj6ytf-RpPMlJ6aXFg3PrIQBbQ/edit#gid=519189277&range='
-
 #Construct the web site
 app.layout = html.Div([
     dcc.Markdown('''
-### Monte Carlo Estimation of COVID-19 airborne transmission during classroom teaching: 
+### Monte Carlo Estimation of COVID-19 infection risk from airborne transmission during classroom teaching 
 
 This is a Monte Carlo verison of Prof. Jose Jimenez’s classroom/semester sheets 
-of his COVID-19 risk estimator ([https://tinyurl.com/covid-estimator](https://tinyurl.com/covid-estimator)). 
+of his COVID-19 risk estimator ([https://tinyurl.com/covid-estimator](https://tinyurl.com/covid-estimator)).
 Please see the README and FAQ tabs on his worksheet for important information 
 on assumptions, methodology, and inputs. This Monte Carlo calculator is available for download as a a spreadsheet at https://tinyurl.com/yxfd23kr.
 
@@ -152,128 +149,158 @@ Please do not just latch on to the numbers, values such as the quanta emission r
 
 ---     
 Developed by **Prasad Kasibhatla** (Duke), with help from Prof. Jose Jimenez (U. Colorado) and Prof. Elizabeth Albright (Duke)  
-Dashboard created by [**John Fay**](mailto:john.fay@duke.edu) (Duke) -- Code available at: [https://github.com/johnpfay/CovidExposure](https://github.com/johnpfay/CovidExposure)  
+Dashboard created by [**John Fay**](mailto:john.fay@duke.edu) and Prasad Kasibhatla (Duke) -- Code available at: [https://github.com/johnpfay/CovidExposure](https://github.com/johnpfay/CovidExposure)  
 Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, comments, and suggestions. 
 ''',style={'border-style':'ridge',
            'padding':'0.5em',
            'background-color': 'lightblue'}),
+
+dcc.Markdown('''
+### INSTRUCTIONS
+
+1) Specify values of input variables relevant to your specific situation, focussing on cells highlighted in yellow.  
+
+2) Cells highlighted in gray can be changed, but we recommended that you use the default values provided.
+
+3) Some variable names are clickable links - click on these names for further information for recommended values.
+
+4) Click the green 'Calculate Infection Probability' button.
+
+5) Results will update in a few seconds, and will be displayed below the 'Calculate Infection Probability' button. 
+''',style={'border-style':'ridge',
+           'padding':'0.5em',
+           'background-color': 'lightgray'}),
+
+    html.Tr([
+        html.Th(),]),
+    html.Tr([
+        html.Th(),]),
+    html.Tr([
+        html.Th(),]),
+    html.Tr([
+        html.Th(),]),
     html.Table([
         html.Tr([
-            html.Th("Known Variables",style={'text-align':'left'}), 
+            html.Th("Known Input Variables",style={'text-align':'left'}), 
             html.Th("Value",style={'text-align':'left'}),
             html.Th("______",style={'color':'white'}),
-            html.Th("Uncertain Variables",style={'text-align':'left'}), 
+            html.Th("Uncertain Input Variables",style={'text-align':'left'}), 
             html.Th("Minimum Value",style={'text-align':'left'}), 
             html.Th("Maximum Value",style={'text-align':'left'})]),
         html.Tr([
-            html.Td("Area of Room (sq.ft.)"), 
+            html.Td("Area of room (sq.ft.)"), 
             html.Td(dcc.Input(id='surface',value=900,type='number')),
             html.Td(""),
-            html.Td([html.A("Ventilation rate w/outside air (per hour)",
-                            href=gsheet_url + 'A195',
-                            target='_blank')]),            
-            html.Td(dcc.Input(id='vent_min',value=1,type='number')),
-            html.Td(dcc.Input(id='vent_max',value=4,type='number'))]),
+            html.Td(html.Div([html.A('Percentage of people in community who are infectious (%)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A4', target='_blank')])),
+            html.Td(dcc.Input(id='infect_min',value=0.19,type='number')),
+            html.Td(dcc.Input(id='infect_max',value=0.38,type='number')),]),
         html.Tr([
-            html.Td("Height of Room (ft.)"), 
+            html.Td("Height of room (ft.)"), 
             html.Td(dcc.Input(id='height',value=10,type='number')),
             html.Td(""),
-            html.Td([html.A("Decay rate of the virus (per hour)",
-                            href=gsheet_url + 'A256',
-                            target='_blank')]),    
-            html.Td(dcc.Input(id='decay_min',value=0,type='number')),
-            html.Td(dcc.Input(id='decay_max',value=1.0,type='number')),]),
+            html.Td(html.Div([html.A('Mask efficiency in reducing virus exhalation (%)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A30', target='_blank')])),
+            html.Td(dcc.Input(id='exmask_min',value=40,type='number')),
+            html.Td(dcc.Input(id='exmask_max',value=60,type='number')),]),
         html.Tr([
             html.Td("# of students"), 
             html.Td(dcc.Input(id='num_students',value=10,type='number')),
             html.Td(""),
-            html.Td([html.A("Deposition rate to surfaces (per hour)",
-                            href=gsheet_url + 'A283',
-                            target='_blank')]),  
-            html.Td(dcc.Input(id='depos_min',value=0.3,type='number')),
-            html.Td(dcc.Input(id='depos_max',value=1.5,type='number')),]),
+            html.Td(html.Div([html.A('Mask efficiency in reducing virus inhalation (%)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A44', target='_blank')])),
+            html.Td(dcc.Input(id='inmask_min',value=30,type='number')),
+            html.Td(dcc.Input(id='inmask_max',value=50,type='number')),]),
         html.Tr([
-            html.Td("Class duration (min.)"), 
+            html.Td("Class duration (min.)"),
             html.Td(dcc.Input(id='class_duration',value=75,type='number')),
             html.Td(""),
-            html.Td([html.A("Loss rate due to additional control measures (per hour)",
-                            href=gsheet_url + 'A289',
-                            target='_blank')]), 
-            html.Td(dcc.Input(id='additional_min',value=0,type='number')),
-            html.Td(dcc.Input(id='additional_max',value=0,type='number')),]),
+            html.Td(html.Div([html.A('Room air ventilation rate w/outside air (per hour)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A51', target='_blank')])),
+            html.Td(dcc.Input(id='vent_min',value=1,type='number')),
+            html.Td(dcc.Input(id='vent_max',value=4,type='number'))]),
         html.Tr([
             html.Td("# of class periods"), 
             html.Td(dcc.Input(id='class_periods',value=26,type='number')),
             html.Td(""),
-            html.Td([html.A("Inhalation rate: Faculty (m³/minute)",
-                            href=gsheet_url + 'A102',
-                            target='_blank')]), 
-            html.Td(dcc.Input(id='breath_fmin',value=0.027,type='number')),
-            html.Td(dcc.Input(id='breath_fmax',value=0.029,type='number'))]),
+            html.Td(html.Div([html.A('Virus removal rate due to additional control measures (per hour)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A66', target='_blank')])),
+            html.Td(dcc.Input(id='additional_min',value=0,type='number')),
+            html.Td(dcc.Input(id='additional_max',value=0,type='number')),]),
         html.Tr([
             html.Td("# of classes taken per student"), 
             html.Td(dcc.Input(id='classes_taken',value=4,type='number')),
             html.Td(""),
-            html.Td([html.A("Inhalation rate: Student (m³/minute)",
-                            href=gsheet_url + 'A102',
-                            target='_blank')]), 
-            html.Td(dcc.Input(id='breath_smin',value=0.012,type='number')),
-            html.Td(dcc.Input(id='breath_smax',value=0.012,type='number'))]),
+            html.Td(html.Div([html.A('Decay rate of virus infectivity indoors (per hour)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A78', target='_blank')])),
+            html.Td(dcc.Input(id='decay_min',value=0,type='number')),
+            html.Td(dcc.Input(id='decay_max',value=1.0,type='number')),]),
         html.Tr([
             html.Td("# of faculty in class"), 
             html.Td("1 (fixed)",style={'border-style':'solid',
                                        'border-color':'grey',
                                        'border-width':'thin'}),
             html.Td(""),
-            html.Td([html.A("Inhalation mask efficiency (%)",
-                            href=gsheet_url + 'A188',
-                            target='_blank')]),
-            html.Td(dcc.Input(id='inmask_min',value=30,type='number')),
-            html.Td(dcc.Input(id='inmask_max',value=50,type='number')),]),
+            html.Td(html.Div([html.A('Deposition rate of virus to surfaces (per hour)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A95', target='_blank')])),
+            html.Td(dcc.Input(id='depos_min',value=0.3,type='number')),
+            html.Td(dcc.Input(id='depos_max',value=1.5,type='number')),]),
         html.Tr([
             html.Td(), 
             html.Td(),
             html.Td(""),
-            html.Td([html.A('Exhalation mask efficiency (%)',
-                            href=gsheet_url + 'A174',
-                            target='_blank')]),
-            #html.Td("Exhalation mask efficiency (%)"),
-            html.Td(dcc.Input(id='exmask_min',value=40,type='number')),
-            html.Td(dcc.Input(id='exmask_max',value=60,type='number')),]),
+            html.Td(html.Div([html.A('Inhalation rate: Faculty (m³/minute)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A101', target='_blank')])),
+            html.Td(dcc.Input(id='breath_fmin',value=0.027,type='number')),
+            html.Td(dcc.Input(id='breath_fmax',value=0.029,type='number'))]),
         html.Tr([
-            html.Td(), 
             html.Td(),
             html.Td(),
-            html.Td([html.A("Community infection rate (%)",
-                            href=gsheet_url + 'A301',
-                            target='_blank')]),
-            html.Td(dcc.Input(id='infect_min',value=0.19,type='number')),
-            html.Td(dcc.Input(id='infect_max',value=0.38,type='number')),]),
+            html.Td(""),
+            html.Td(html.Div([html.A('Inhalation rate: Student (m³/minute)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A101', target='_blank')])),
+            html.Td(dcc.Input(id='breath_smin',value=0.012,type='number')),
+            html.Td(dcc.Input(id='breath_smax',value=0.012,type='number'))]),
+        html.Tr([]),
+        html.Tr([]),
+        html.Tr([]),
         html.Tr([
             html.Th(), 
             html.Th(),
             html.Th("______",style={'color':'white'}),
-            html.Th("FOR ADVANCED USERS ONLY",style={'text-align':'left'}), 
-            html.Th("Mean",style={'text-align':'left'}), 
+            html.Th("FOR ADVANCED USERS ONLY",style={'text-align':'left'})]), 
+        html.Tr([
+            html.Th(),
+            html.Th(),
+            html.Th("______",style={'color':'white'}),
+            html.Th("Click links below before specifying",style={'text-align':'left'}),
+            html.Th("Mean",style={'text-align':'left'}),
             html.Th("Standard Deviation",style={'text-align':'left'})]),
         html.Tr([
             html.Td(""), 
             html.Td(""),
             html.Td(""),
-            html.Td("log10[(Quanta emission rate: Faculty (quanta/hour)]"),
+            html.Td(html.Div([html.A('Quanta emission rate: Faculty (quanta/hour)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A105', target='_blank')])),
             html.Td(dcc.Input(id='qfac_min',value=1.5,type='number')),
             html.Td(dcc.Input(id='qfac_max',value=0.71,type='number')),]),
         html.Tr([
             html.Td(),html.Td(),html.Td(),
-            html.Td("log10[(Quanta emission rate: Student (quanta/hour)]"),
+            html.Td(html.Div([html.A('Quanta emission rate: Student (quanta/hour)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A105', target='_blank')])),
             html.Td(dcc.Input(id='qstu_min',value=0.69,type='number')),
             html.Td(dcc.Input(id='qstu_max',value=0.71,type='number')),]),
             ]),
               
-    html.Button(id='submit-button-state',n_clicks=0,children='Recalculate',
+    html.Button(id='submit-button-state',n_clicks=0,children='Calculate Infection Probability',
                 style={'font-size':24,'background-color': '#4CAF50',
                        'color':'white',
                        'padding':'15px 32px'}),
+
+    dcc.Markdown('''
+    ### RESULTS
+
+    The calculated infection probability spans a range of values because some input variables are uncertain.
+
+    Shown below are results of calculations using 10,000 random combinations for the values of these uncertain input values.
+
+    Plots show the frequency distribution of the calculated infection probability from these 10,000 simulations.
+
+    Statistical summaries of the results are provided to the lefft of each plot.
+
+    ''',style={'border-style':'ridge',
+               'padding':'0.5em',
+               'background-color': 'lightgray'}),
+
     html.Table([
         html.Tr([
             html.Td(dcc.Markdown(id='faculty_results')),
