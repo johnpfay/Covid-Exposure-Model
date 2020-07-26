@@ -1,13 +1,38 @@
 body {
-    font-family: calibri;
-	background-color: #ffffff;
+    font-family: times;
 }
 h1, h2, h3, h4, h5, h6 {
-    
+
 }
 
-input#vent_max,
-input#vent_min,
+input#surface,
+input#height,
+input#num_students,
+input#class_duration,
+input#class_periods,
+input#classes_taken,
 input#infect_min,
-input#infect_max
+input#infect_max,
+input#exmask_min,
+input#exmask_max,
+input#inmask_min,
+input#inmask_max,
+input#vent_min,
+input#vent_max,
+input#additional_min,
+input#additional_max
  {background-color:yellow;}
+
+input#decay_min,
+input#decay_max,
+input#depos_min,
+input#depos_max,
+input#breath_fmin,
+input#breath_fmax,
+input#breath_smin,
+input#breath_smax,
+input#qfac_min,
+input#qfac_max,
+input#qstu_min,
+input#qstu_max
+ {background-color:lightgray;}
