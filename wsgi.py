@@ -149,7 +149,7 @@ Please do not just latch on to the numbers, values such as the quanta emission r
 
 ---     
 Developed by **Prasad Kasibhatla** (Duke), with help from Prof. Jose Jimenez (U. Colorado) and Prof. Elizabeth Albright (Duke)  
-Dashboard created by [**John Fay**](mailto:john.fay@duke.edu) and Prasad Kasibhatla (Duke) -- Code available at: [https://github.com/johnpfay/CovidExposure](https://github.com/johnpfay/CovidExposure)  
+Dashboard created by [**John Fay**](mailto:john.fay@duke.edu) and Prasad Kasibhatla (Duke) -- Code available at: [https://github.com/johnpfay/Covid-Exposure-Model](https://github.com/johnpfay/Covid-Exposure-Model)  
 Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, comments, and suggestions. 
 ''',style={'border-style':'ridge',
            'padding':'0.5em',
