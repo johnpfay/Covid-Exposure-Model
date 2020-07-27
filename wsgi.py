@@ -135,41 +135,41 @@ application = app.server
 #Construct the web site
 app.layout = html.Div([
     dcc.Markdown('''
-### Monte Carlo Estimation of COVID-19 infection risk from airborne transmission during classroom teaching 
+    ### Monte Carlo Estimation of COVID-19 infection risk from airborne transmission during classroom teaching 
+    
+    This is a Monte Carlo verison of Prof. Jose Jimenez’s classroom/semester sheets 
+    of his COVID-19 risk estimator ([https://tinyurl.com/covid-estimator](https://tinyurl.com/covid-estimator)).
+    Please see the README and FAQ tabs on his worksheet for important information 
+    on assumptions, methodology, and inputs. This Monte Carlo calculator is available for download as a a spreadsheet at https://tinyurl.com/yxfd23kr.
+    
+    **_NOTE: 
+    The absolute estimates of risk are very uncertain, only expect to get the order-of-magnitude right. 
+    The effect of control measures (e.g. more ventilation, fewer people, shorter duration, masks vs not) are expected to be much more accurate. 
+    Please do not just latch on to the numbers, values such as the quanta emission rates evolve with new knowledge._**  
+    
+    ---     
+    Developed by **Prasad Kasibhatla** (Duke), with help from Prof. Jose Jimenez (U. Colorado) and Prof. Elizabeth Albright (Duke)  
+    Dashboard created by [**John Fay**](mailto:john.fay@duke.edu) and Prasad Kasibhatla (Duke) -- Code available at: [https://github.com/johnpfay/Covid-Exposure-Model](https://github.com/johnpfay/Covid-Exposure-Model)  
+    Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, comments, and suggestions. 
+    ''',style={'border-style':'ridge',
+               'padding':'0.5em',
+               'background-color': 'lightblue'}),
 
-This is a Monte Carlo verison of Prof. Jose Jimenez’s classroom/semester sheets 
-of his COVID-19 risk estimator ([https://tinyurl.com/covid-estimator](https://tinyurl.com/covid-estimator)).
-Please see the README and FAQ tabs on his worksheet for important information 
-on assumptions, methodology, and inputs. This Monte Carlo calculator is available for download as a a spreadsheet at https://tinyurl.com/yxfd23kr.
-
-**_NOTE: 
-The absolute estimates of risk are very uncertain, only expect to get the order-of-magnitude right. 
-The effect of control measures (e.g. more ventilation, fewer people, shorter duration, masks vs not) are expected to be much more accurate. 
-Please do not just latch on to the numbers, values such as the quanta emission rates evolve with new knowledge._**  
-
----     
-Developed by **Prasad Kasibhatla** (Duke), with help from Prof. Jose Jimenez (U. Colorado) and Prof. Elizabeth Albright (Duke)  
-Dashboard created by [**John Fay**](mailto:john.fay@duke.edu) and Prasad Kasibhatla (Duke) -- Code available at: [https://github.com/johnpfay/Covid-Exposure-Model](https://github.com/johnpfay/Covid-Exposure-Model)  
-Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, comments, and suggestions. 
-''',style={'border-style':'ridge',
-           'padding':'0.5em',
-           'background-color': 'lightblue'}),
-
-dcc.Markdown('''
-### INSTRUCTIONS
-
-1) Specify values of input variables relevant to your specific situation, focussing on cells highlighted in yellow.  
-
-2) Cells highlighted in gray can be changed, but we recommended that you use the default values provided.
-
-3) Some variable names are clickable links - click on these names for further information for recommended values.
-
-4) Click the green 'Calculate Infection Probability' button.
-
-5) Results will update in a few seconds, and will be displayed below the 'Calculate Infection Probability' button. 
-''',style={'border-style':'ridge',
-           'padding':'0.5em',
-           'background-color': 'lightgray'}),
+    dcc.Markdown('''
+    ### INSTRUCTIONS
+    
+    1) Specify values of input variables relevant to your specific situation, focussing on cells highlighted in yellow.  
+    
+    2) Cells highlighted in gray can be changed, but we recommended that you use the default values provided.
+    
+    3) Some variable names are clickable links - click on these names for further information for recommended values.
+    
+    4) Click the green 'Calculate Infection Probability' button.
+    
+    5) Results will update in a few seconds, and will be displayed below the 'Calculate Infection Probability' button. 
+    ''',style={'border-style':'ridge',
+               'padding':'0.5em',
+               'background-color': 'lightgray'}),
 
     html.Tr([
         html.Th(),]),
