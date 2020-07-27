@@ -120,6 +120,23 @@ def summarize_output(df,faculty=True):
 '''
     return md_text
 
+def update_results(first_click=False):
+    if first_click:
+        return 'Click button to compute results...'
+    md_text = '''
+    ### RESULTS
+
+    The calculated infection probability spans a range of values because some input variables are uncertain.
+
+    Shown below are results of calculations using 10,000 random combinations for the values of these uncertain input values.
+
+    Plots show the frequency distribution of the calculated infection probability from these 10,000 simulations.
+
+    Statistical summaries of the results are provided to the lefft of each plot.
+
+    '''
+    return md_text
+
 #%%Read in the static data
 df = update_df()
 fig = update_figure(df)
@@ -286,21 +303,11 @@ app.layout = html.Div([
                        'color':'white',
                        'padding':'15px 32px'}),
 
-    dcc.Markdown('''
-    ### RESULTS
-
-    The calculated infection probability spans a range of values because some input variables are uncertain.
-
-    Shown below are results of calculations using 10,000 random combinations for the values of these uncertain input values.
-
-    Plots show the frequency distribution of the calculated infection probability from these 10,000 simulations.
-
-    Statistical summaries of the results are provided to the lefft of each plot.
-
-    ''',style={'border-style':'ridge',
-               'padding':'0.5em',
-               'background-color': 'lightgray'}),
-
+    dcc.Markdown(id='results_text',
+                 style={'border-style':'ridge',
+                        'padding':'0.5em',
+                        'background-color': 'lightgray'}),
+             
     html.Table([
         html.Tr([
             html.Td(dcc.Markdown(id='faculty_results')),
@@ -317,7 +324,8 @@ app.layout = html.Div([
 @app.callback([Output('faculty_results','children'),
                Output('student_results','children'),
                Output('faculty_histogram','figure'),
-               Output('student_histogram','figure')],
+               Output('student_histogram','figure'),
+               Output('results_text','children')],
               [Input('submit-button-state','n_clicks')],
               [State('surface','value'),
                State('height','value'),
@@ -337,7 +345,7 @@ app.layout = html.Div([
                State('inmask_min','value'),State('inmask_max','value'),
                State('infect_min','value'),State('infect_max','value')]
 )
-def update_page(input_value,sa,ht,nstudents,cduration,cperiods,ctaken,
+def update_page(num_clicks,sa,ht,nstudents,cduration,cperiods,ctaken,
                 breath_fmin,breath_fmax,
                 breath_smin,breath_smax,
                 vent_min,vent_max,
@@ -348,7 +356,7 @@ def update_page(input_value,sa,ht,nstudents,cduration,cperiods,ctaken,
                 qstu_min,qstu_max,
                 exmask_min,exmask_max,
                 inmask_min,inmask_max,
-                infect_min,infect_max):
+                infect_min,infect_max):   
     #Recompute the monte carlo run
     df = update_df(surface_area=sa,
                    height=ht,
@@ -366,19 +374,26 @@ def update_page(input_value,sa,ht,nstudents,cduration,cperiods,ctaken,
                    quanta_emission_rate_student = [qstu_min,qstu_max],
                    exhalation_mask_efficiency = [exmask_min/100,exmask_max/100],
                    inhalation_mask_efficiency = [inmask_min/100,inmask_max/100],
-                   background_infection_rate = [infect_min/100,infect_max/100])
-                   
+                   background_infection_rate = [infect_min/100,infect_max/100])  
+            
     #Get summaries
     fac_results = summarize_output(df,True)
     stu_results = summarize_output(df,False)
     #Create histogram
     fac_fig = update_figure(df,True)
     stu_fig = update_figure(df,False)
-    #return f'Pexp Faculty (Semester): {mean_val:0.2%}',fig
-    return fac_results,stu_results,fac_fig,stu_fig
-    
+    #Create results markdown
+    if num_clicks < 1:
+        results_md = update_results(True)
+        fac_results = '',
+        stu_results = '',
+        fac_fig = {}
+        stu_fig = {}
+    else:
+        results_md = update_results(False)
+    #Return items to update page
+    return fac_results,stu_results,fac_fig,stu_fig,results_md
 
-
-
+   
 if __name__ == '__main__':
     app.run_server(debug=True)
