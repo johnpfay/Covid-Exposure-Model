@@ -154,6 +154,7 @@ application = app.server
 
 #Construct the web site
 app.layout = html.Div([
+    html.Div([
     dcc.Markdown('''
 ### Estimation of COVID-19 infection risk from airborne transmission during classroom teaching 
 
@@ -174,8 +175,9 @@ Please see the README and FAQ tabs on his [worksheet](https://tinyurl.com/covid-
 for important information on assumptions, methodology, and inputs.
 The Monte Carlo capability implemented here allows for estimates of confidence 
 intervals for model predictions of infection probabilities.
-
-**_Important: The risk calculations here are only for disease transmission 
+'''),
+dcc.Markdown('''
+_**Important**: The risk calculations here are only for disease transmission 
 by the airborne aerosol route, and do not account for transmission by droplets 
 or from contaminated surfaces. The implicit assumption is that appropriate 
 social distancing and hygiene protocols are strictly adhered to in the classroom. 
@@ -187,8 +189,9 @@ of virion-containing aerosols by infected individuals and the percentage of
 infected individuals in the classroom. The model is nevertheless useful to 
 explore the relative effects of control measures (e.g. more ventilation, 
 fewer people, shorter duration, masks vs no masks) on COVID-19 transmission 
-by aerosols in classrooms._**
-
+by aerosols in classrooms._
+''',style={'color':'darkred'}),
+dcc.Markdown('''
 ---     
 * Developed by [Prasad Kasibhatla](https://nicholas.duke.edu/people/faculty/kasibhatla), 
 [Jose Jimenez](https://www.colorado.edu/chemistry/jose-luis-jimenez), 
@@ -198,11 +201,12 @@ by aerosols in classrooms._**
 * Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) with questions, comments, and suggestions.  
 * Code availability: [Web Dashboard version](https://github.com/johnpfay/Covid-Exposure-Model) and [Spreadsheet version](https://tinyurl.com/yxfd23kr).
 
-''',style={'border-style':'ridge',
+''',style={'font-size':'12px'}),
+],style={'border-style':'ridge',
            'border-radius': '5px',
            'padding':'0.5em',
            'background-color': 'lightblue'}),
-
+                 
 dcc.Markdown('''
 ### INSTRUCTIONS
 1. Specify values of input parameters relevant to your specific situation, focusing on cells highlighted in yellow.  
