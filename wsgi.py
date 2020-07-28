@@ -190,7 +190,7 @@ infected individuals in the classroom. The model is nevertheless useful to
 explore the relative effects of control measures (e.g. more ventilation, 
 fewer people, shorter duration, masks vs no masks) on COVID-19 transmission 
 by aerosols in classrooms._
-''',style={'color':'darkred'}),
+''',style={'color':'#cc0e0e'}),
 dcc.Markdown('''
 ---     
 Developed by [Prasad Kasibhatla](https://nicholas.duke.edu/people/faculty/kasibhatla), 
@@ -301,15 +301,15 @@ dcc.Markdown('''
             html.Td(),
             html.Td(""),
             html.Td(html.Div([html.A('Inhalation rate: Faculty (m³/minute)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A101', target='_blank')])),
-            html.Td(dcc.Input(id='breath_fmin',value=0.027,type='number')),
-            html.Td(dcc.Input(id='breath_fmax',value=0.029,type='number'))]),
+            html.Td(dcc.Input(id='breath_fmin',value=0.005,type='number')),
+            html.Td(dcc.Input(id='breath_fmax',value=0.010,type='number'))]),
         html.Tr([
             html.Td(),
             html.Td(),
             html.Td(""),
             html.Td(html.Div([html.A('Inhalation rate: Student (m³/minute)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A101', target='_blank')])),
-            html.Td(dcc.Input(id='breath_smin',value=0.012,type='number')),
-            html.Td(dcc.Input(id='breath_smax',value=0.012,type='number'))]),
+            html.Td(dcc.Input(id='breath_smin',value=0.005,type='number')),
+            html.Td(dcc.Input(id='breath_smax',value=0.007,type='number'))]),
         html.Tr([]),
         html.Tr([]),
         html.Tr([]),
