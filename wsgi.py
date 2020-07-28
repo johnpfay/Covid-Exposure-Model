@@ -175,14 +175,19 @@ for important information on assumptions, methodology, and inputs.
 The Monte Carlo capability implemented here allows for estimates of confidence 
 intervals for model predictions of infection probabilities.
 
-**_NOTE: 
-Users should bear in mind that the absolute estimates of predicted risk from this 
-model are quite uncertain because of uncertainties in
-our knowledge of key paramaters such as the exhalation rate of virion-containing aerosols 
-by infected individuals and the percentage of infected individuals in the classroom. 
-The model is nevertheless useful to explore the relative effects of control measures 
-(e.g. more ventilation, fewer people, shorter duration, masks vs no masks) 
-on COVID-19 transmission by aerosols in classrooms._**
+**_Important: The risk calculations here are only for disease transmission 
+by the airborne aerosol route, and do not account for transmission by droplets 
+or from contaminated surfaces. The implicit assumption is that appropriate 
+social distancing and hygiene protocols are strictly adhered to in the classroom. 
+To the extent that this is not true, the risk of infection will be higher than 
+predicted by these calculations. Users should also also bear in mind that the 
+absolute estimates of predicted risk from this model are quite uncertain because 
+of uncertainties in our knowledge of key parameters such as the exhalation rate 
+of virion-containing aerosols by infected individuals and the percentage of 
+infected individuals in the classroom. The model is nevertheless useful to 
+explore the relative effects of control measures (e.g. more ventilation, 
+fewer people, shorter duration, masks vs no masks) on COVID-19 transmission 
+by aerosols in classrooms._**
 
 ---     
 * Developed by [Prasad Kasibhatla](https://nicholas.duke.edu/people/faculty/kasibhatla), 
