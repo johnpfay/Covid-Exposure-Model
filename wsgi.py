@@ -310,30 +310,28 @@ dcc.Markdown('''
             html.Th("______",style={'color':'white'}),
             html.Th("FOR ADVANCED USERS ONLY",style={'text-align':'left'})]), 
         html.Tr([
-            html.Th(),
-            html.Th(),
+            html.Th(html.Button(id='submit-button-state',n_clicks=0,children='Calculate Infection Probability',
+                                style={'font-size':24,'background-color': '#4CAF50',
+                                       'color':'white',
+                                       'padding':'15px 32px'}),
+                rowSpan=3,
+                colSpan=2),
             html.Th("______",style={'color':'white'}),
             html.Th("Click links below before specifying",style={'text-align':'left'}),
             html.Th("Mean",style={'text-align':'left'}),
             html.Th("Standard Deviation",style={'text-align':'left'})]),
         html.Tr([
-            html.Td(""), 
-            html.Td(""),
             html.Td(""),
             html.Td(html.Div([html.A('Quanta emission rate: Faculty (quanta/hour)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A105', target='_blank')])),
             html.Td(dcc.Input(id='qfac_min',value=1.5,type='number')),
             html.Td(dcc.Input(id='qfac_max',value=0.71,type='number')),]),
         html.Tr([
-            html.Td(),html.Td(),html.Td(),
+            html.Td(),
             html.Td(html.Div([html.A('Quanta emission rate: Student (quanta/hour)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A105', target='_blank')])),
             html.Td(dcc.Input(id='qstu_min',value=0.69,type='number')),
             html.Td(dcc.Input(id='qstu_max',value=0.71,type='number')),]),
             ]),
               
-    html.Button(id='submit-button-state',n_clicks=0,children='Calculate Infection Probability',
-                style={'font-size':24,'background-color': '#4CAF50',
-                       'color':'white',
-                       'padding':'15px 32px'}),
 
     dcc.Markdown(id='results_text'),
 
