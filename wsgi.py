@@ -193,15 +193,15 @@ by aerosols in classrooms._
 ''',style={'color':'darkred'}),
 dcc.Markdown('''
 ---     
-* Developed by [Prasad Kasibhatla](https://nicholas.duke.edu/people/faculty/kasibhatla), 
+Developed by [Prasad Kasibhatla](https://nicholas.duke.edu/people/faculty/kasibhatla), 
 [Jose Jimenez](https://www.colorado.edu/chemistry/jose-luis-jimenez), 
 [John Fay](https://nicholas.duke.edu/people/faculty/fay), 
 [Elizabeth Albright](https://nicholas.duke.edu/people/faculty/albright), and 
 [William Pan](https://nicholas.duke.edu/people/faculty/pan).  
-* Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) with questions, comments, and suggestions.  
-* Code availability: [Web Dashboard version](https://github.com/johnpfay/Covid-Exposure-Model) and [Spreadsheet version](https://tinyurl.com/yxfd23kr).
+Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) with questions, comments, and suggestions.  
+Code availability: [Web Dashboard version](https://github.com/johnpfay/Covid-Exposure-Model) and [Spreadsheet version](https://tinyurl.com/yxfd23kr).
 
-''',style={'font-size':'12px'}),
+'''),
 ],style={'border-style':'ridge',
            'border-radius': '5px',
            'padding':'0.5em',
