@@ -185,37 +185,30 @@ The model is nevertheless useful to explore the relative effects of control meas
 on COVID-19 transmission by aerosols in classrooms._**
 
 ---     
-Developed by [Prasad Kasibhatla](https://nicholas.duke.edu/people/faculty/kasibhatla), 
+* Developed by [Prasad Kasibhatla](https://nicholas.duke.edu/people/faculty/kasibhatla), 
 [Jose Jimenez](https://www.colorado.edu/chemistry/jose-luis-jimenez), 
 [John Fay](https://nicholas.duke.edu/people/faculty/fay), 
 [Elizabeth Albright](https://nicholas.duke.edu/people/faculty/albright), and 
 [William Pan](https://nicholas.duke.edu/people/faculty/pan).  
-
-Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) with questions, comments, and suggestions.
-
-Code availability: [Web Dashboard version](https://github.com/johnpfay/Covid-Exposure-Model) and [Spreadsheet version](https://tinyurl.com/yxfd23kr).
+* Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) with questions, comments, and suggestions.  
+* Code availability: [Web Dashboard version](https://github.com/johnpfay/Covid-Exposure-Model) and [Spreadsheet version](https://tinyurl.com/yxfd23kr).
 
 ''',style={'border-style':'ridge',
+           'border-radius': '5px',
            'padding':'0.5em',
            'background-color': 'lightblue'}),
 
 dcc.Markdown('''
 ### INSTRUCTIONS
-
-1) Specify values of input parameters relevant to your specific situation, focusing on cells highlighted in yellow.  
-
-2) Cells highlighted in gray can be changed, but we recommended that you use the default values provided.
-
-3) Some parameter names are clickable links - click on these names for further information for recommended values.
-
-4) Click the green 'Calculate Infection Probability' button.
-
-5) Results will update in a few seconds, and will be displayed below the 'Calculate Infection Probability' button. 
-
-6) Change input parameter values and click the green 'Calculate Infection Probability' button again to see updated results.
-
-7) To calculate the infection probability for multiple courses, [follow these directions](https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A112').
+1. Specify values of input parameters relevant to your specific situation, focusing on cells highlighted in yellow.  
+2. Cells highlighted in gray can be changed, but we recommended that you use the default values provided.
+3. Some parameter names are clickable links - click on these names for further information for recommended values.
+4. Click the green 'Calculate Infection Probability' button.
+5. Results will update in a few seconds, and will be displayed below the 'Calculate Infection Probability' button. 
+6. Change input parameter values and click the green 'Calculate Infection Probability' button again to see updated results.
+7. To calculate the infection probability for multiple courses, [follow these directions](https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A112').
 ''',style={'border-style':'ridge',
+           'border-radius': '5px',
            'padding':'0.5em',
            'background-color': 'lightgray'}),
 
@@ -239,7 +232,8 @@ dcc.Markdown('''
             html.Td("Number of faculty in the course"),
             html.Td("1 (fixed)",style={'border-style':'solid',
                                        'border-color':'grey',
-                                       'border-width':'thin'}),
+                                       'border-width':'thin',
+                                       'font-size':'small'}),
             html.Td(""),
             html.Td(html.Div([html.A('Percentage of faculty-age people in community who are infectious (%)', href='https://docs.google.com/spreadsheets/d/1LS2f28meUwiy-AxGQXyd1ily9HPbh9hvYD48Qulaj6s/edit#gid=0&range=A4', target='_blank')])),
             html.Td(dcc.Input(id='infectf_min',value=0.70,type='number')),

@@ -1,9 +1,9 @@
 body {
-    font-family: times;
+    font-family: Open Sans
 }
-h1, h2, h3, h4, h5, h6 {
 
-}
+h3 {line-height: inherit;
+    margin: 0em}
 
 input#surface,
 input#height,
@@ -36,3 +36,17 @@ input#qfac_max,
 input#qstu_min,
 input#qstu_max
  {background-color:lightgray;}
+
+/*Default input width*/
+input {width: 6em;}
+
+/*Unordered and ordered lists*/
+ul,ol {line-height: 1.6;
+       margin:0;}
+
+/*Unordered list style*/
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;}
+
