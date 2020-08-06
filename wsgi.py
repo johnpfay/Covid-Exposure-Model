@@ -169,8 +169,11 @@ virion-containing aerosols by infected individuals and the loss of these particl
 Probabilities of infection are calculated based on the
 virion dose inhaled (accounting for use of masks) by uninfected people in the classroom. 
 
-This is a Monte Carlo version of the [COVID-19 risk estimator](https://tinyurl.com/covid-estimator) 
-developed by [Jose Jimenez](https://www.colorado.edu/chemistry/jose-luis-jimenez). 
+This probabilistic Monte Carlo framework was developed by 
+[Prasad Kasibhatla](https://nicholas.duke.edu/people/faculty/kasibhatla), 
+as an offshoot of the 
+[COVID-19 risk estimator](https://tinyurl.com/covid-estimator) developed by 
+[Jose Jimenez](https://www.colorado.edu/chemistry/jose-luis-jimenez).
 Please see the README and FAQ tabs on his [worksheet](https://tinyurl.com/covid-estimator) 
 for important information on assumptions, methodology, and inputs.
 The Monte Carlo capability implemented here allows for estimates of confidence 
