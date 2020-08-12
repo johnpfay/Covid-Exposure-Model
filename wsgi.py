@@ -66,7 +66,7 @@ def update_df(surface_area = 900,
     df['INS_S'] = df['CONCS'] * df['BRS'] * duration/60 * (1-df['EFFIN']) 
     # INECTION PROBABILITIES FOR FACULTY/STUDENT INFECTION
     df['PF_S']  = df['INFRATES'] * (1 - np.exp(-df['INF_S']))
-    df['PS_F']  = df['INFRATES'] * (1 - np.exp(-df['INS_F']))
+    df['PS_F']  = df['INFRATEF'] * (1 - np.exp(-df['INS_F']))
     df['PS_S']  = df['INFRATES'] * (1 - np.exp(-df['INS_S']))
     # INFECTION PROBABILITIES FOR 1 CLASS SESSION
     df['PF'] = 1 - ((1-df['PF_S'])**(num_students))
