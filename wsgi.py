@@ -238,8 +238,8 @@ dcc.Markdown('''
             html.Th("Value",style={'text-align':'left'}),
             html.Th("______",style={'color':'white'}),
             html.Th("Uncertain Parameters: Specify Range",style={'text-align':'left'}), 
-            html.Th("Minimum Value",style={'text-align':'left'}), 
-            html.Th("Maximum Value",style={'text-align':'left'})]),
+            html.Th("Minimum",style={'text-align':'left'}), 
+            html.Th("Maximum",style={'text-align':'left'})]),
         html.Tr([
             html.Td("Number of faculty in the course"),
             html.Td("1 (fixed)",style={'border-style':'solid',
