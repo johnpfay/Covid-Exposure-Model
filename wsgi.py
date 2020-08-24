@@ -202,7 +202,7 @@ Developed by [Prasad Kasibhatla](https://nicholas.duke.edu/people/faculty/kasibh
 [Elizabeth Albright](https://nicholas.duke.edu/people/faculty/albright), and 
 [William Pan](https://nicholas.duke.edu/people/faculty/pan).  
 Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) with questions, comments, and suggestions.  
-Code availability: [Web Dashboard version](https://github.com/johnpfay/Covid-Exposure-Model) and [Spreadsheet version](https://tinyurl.com/yxfd23kr).
+Code availabile at: [https://github.com/johnpfay/Covid-Exposure-Model]
 
 '''),
 ],style={'border-style':'ridge',
